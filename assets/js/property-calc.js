@@ -2,75 +2,208 @@
 
   "use strict";
 
-  //jcode start ------
-  
+  //jcode start ------------------------------------------
+    
+  window.owner_policy = function owner_policy(price){
+
+    // if(price > 1000000){
+    //   return
+    // }
+
+    var premium  = 1950;
+    var sell_price = 200000;
+    while( sell_price < 1000000 ){
+
+      if(price <= sell_price ){
+        return premium;
+      }
+      
+      if( sell_price == 500000 ){
+        premium += 45;
+      }else{
+        premium += 20;  
+      }
+
+      sell_price += 10000;
+    }
+
+    return premium;
+  }
+
+  //window.year_days = 
+  function year_days(date){
+    // calcuate days 
+    var start_date = new Date(new Date().getFullYear(), 0, 1);
+    let date_2 = new Date(date);
+    // console.log(start_date)
+    // console.log(date_2)
+    let difference = start_date.getTime() - date_2.getTime();
+    // console.log(difference);
+    // console.log( difference / (1000 * 3600 * 24) );
+    let TotalDays = Math.ceil(difference / (1000 * 3600 * 24)) - 1;
+    console.log({'TotalDays':TotalDays});
+    return TotalDays;
+  }
+
+  window.check_NaN = function check_NaN(num) {
+    if( typeof num == 'number' && isNaN(num) == false ){
+      return num;
+    }else{
+      return 0;
+    }
+  }
+
+
+  window.sub_total = function sub_total(current_obj) {
+    var subtotal = 0;
+    console.log(store);
+    //subtotal += ( typeof store. == 'number' )? store.
+    //
+    subtotal += ( typeof store.first_installment == 'number' )? store.first_installment : 0;
+    subtotal += ( typeof store.second_installment == 'number' )? store.second_installment : 0;
+    subtotal += ( typeof store.city_transfer_tax == 'number' )? store.city_transfer_tax : 0;
+    subtotal += ( typeof store.commission == 'number' )? store.commission : 0;
+    subtotal += ( typeof store.current_year_tax_credit == 'number' )? store.current_year_tax_credit : 0;
+    subtotal += ( typeof store.fix_cost == 'number' )? store.fix_cost : 0;
+    subtotal += ( typeof store.owner_policy_premium == 'number' )? store.owner_policy_premium : 0;
+    subtotal += ( typeof store.state_county_transfer_tax == 'number' )? store.state_county_transfer_tax : 0;
+    
+    subtotal += ( typeof store.water_n_zoning_fees == 'number' )? store.water_n_zoning_fees : 0;
+    subtotal += ( typeof store.outstanding_mortgage == 'number' )? store.outstanding_mortgage : 0;
+    subtotal += ( typeof store.closing_cost_credit == 'number' )? store.closing_cost_credit : 0;
+    subtotal += ( typeof store.in_chicago == 'number' )? store.in_chicago : 0;
+    
+    //subtotal += ( typeof store. == 'number' )? store. : 0;
+    //subtotal += ( typeof store. == 'number' )? store. : 0;
+    //subtotal += ( typeof store. == 'number' )? store. : 0;
+    
+    //return subtotal;
+    if( isNaN(subtotal) == false ){
+      current_obj.find('.subtotal').val('-$'+ subtotal);  
+      current_obj.find('.calc-note').hide();
+    }else{
+      current_obj.find('.calc-note').show();
+    }
+    
+  }
+    
   // date picker 
   //$( ".closing_date" ).datepicker();
   $( ".closing_date" ).datepicker({
     showOtherMonths: true,
     selectOtherMonths: true,
-    dateFormat: 'mm/dd/yy', 
+    formatDate: 'dd/mm/yy', 
   });
   
-  var store = {}; // store data for all access 
+  // store data for all access 
+  var store = {}; 
+  store.first_installment = 0;
+  store.second_installment = 0;
 
   // in_chicago
   $(document).on('change', '.is_property_in_chicago', function() {
     var val = $(this).val();
-    var currant_obj = $(this).closest('.net-rate-calculator-warp');
+    var current_obj = $(this).closest('.net-rate-calculator-warp');
 
     if(val == 'yes'){
-       currant_obj.find('.in_chicago').show();
+      current_obj.find('.in_chicago').show();
+      store.in_chicago = 371;
     }else{
-      currant_obj.find('.in_chicago').hide();
-    }    
+      current_obj.find('.in_chicago').hide();
+      store.in_chicago = 0;
+    }
+    
+    // subtotal
+    sub_total(current_obj);
+
   });
 
   //div_outstanding_mortgage
   $(document).on('change', '.is_outstanding_mortgage', function() {
     var val = $(this).val();
-    var currant_obj = $(this).closest('.net-rate-calculator-warp');
+    var current_obj = $(this).closest('.net-rate-calculator-warp');
 
     if(val == 'yes'){
-      currant_obj.find('.div_outstanding_mortgage').show();
+      current_obj.find('.div_outstanding_mortgage').show();
     }else{
-      currant_obj.find('.div_outstanding_mortgage').hide();
-    }    
+      current_obj.find('.div_outstanding_mortgage').hide();
+    }
+
+    // subtotal
+    sub_total(current_obj);
+
   });
 
+  // outstanding_mortgage
+  $(document).on('keyup', '.outstanding_mortgage', delay(function() {
+    var current_obj = $(this).closest('.net-rate-calculator-warp');
+    var outstanding_mortgage = parseInt(current_obj.find('.outstanding_mortgage').val());
+    store.outstanding_mortgage = outstanding_mortgage;
+
+    // subtotal
+    sub_total(current_obj);
+
+  },10));
+  // closing_cost_credit
+  $(document).on('keyup', '.closing_cost_credit', delay(function() {
+    var current_obj = $(this).closest('.net-rate-calculator-warp');
+    var closing_cost_credit = parseInt(current_obj.find('.closing_cost_credit').val());
+    store.closing_cost_credit = closing_cost_credit;
+
+    // subtotal
+    sub_total(current_obj);
+
+  },10));
+  
   //div_closing_cost_credit
   $(document).on('change', '.is_closing_cost_credit', function() {
     var val = $(this).val();
-    var currant_obj = $(this).closest('.net-rate-calculator-warp');
+    var current_obj = $(this).closest('.net-rate-calculator-warp');
 
     if(val == 'yes'){
-      currant_obj.find('.div_closing_cost_credit').show();
+      current_obj.find('.div_closing_cost_credit').show();
     }else{
-      currant_obj.find('.div_closing_cost_credit').hide();
-    }    
+      current_obj.find('.div_closing_cost_credit').hide();
+    }
+
+    // subtotal
+    sub_total(current_obj);
+
   });
 
   //div_1st_installment_paid
   $(document).on('change', '.is_1st_installment_paid', function() {
     var val = $(this).val();
-    var currant_obj = $(this).closest('.net-rate-calculator-warp');
+    var current_obj = $(this).closest('.net-rate-calculator-warp');
 
     if(val == 'no'){
-      currant_obj.find('.div_1st_installment_paid').show();
+      current_obj.find('.div_1st_installment_paid').show();
+      store.first_installment = store._1st_installment_paid;
     }else{
-      currant_obj.find('.div_1st_installment_paid').hide();
-    }    
+      current_obj.find('.div_1st_installment_paid').hide();
+      store.first_installment = 0;
+    }
+
+    // subtotal
+    sub_total(current_obj);
+
   });
   //div_2nd_installment_paid
   $(document).on('change', '.is_2nd_installment_paid', function() {
     var val = $(this).val();
-    var currant_obj = $(this).closest('.net-rate-calculator-warp');
+    var current_obj = $(this).closest('.net-rate-calculator-warp');
 
     if(val == 'no'){
-      currant_obj.find('.div_2nd_installment_paid').show();
+      current_obj.find('.div_2nd_installment_paid').show();
+      store.second_installment = store._2nd_installment_paid;
     }else{
-      currant_obj.find('.div_2nd_installment_paid').hide();
-    }    
+      current_obj.find('.div_2nd_installment_paid').hide();
+      store.second_installment = 0;
+    }
+
+    // subtotal
+    sub_total(current_obj);
+
   });
 
   $(document).on('keyup', '.last_year_property_taxes', delay(function() {
@@ -81,6 +214,19 @@
 
     store._1st_installment_paid = (last_year_property_taxes/2);
     store._2nd_installment_paid = (last_year_property_taxes/2);
+
+    console.log(store);
+    var days = store.days;
+    if( isNaN(days) == false ){
+
+      var current_year_tax_credit = ( Math.ceil(last_year_property_taxes/365) * days * -1 );
+      store.current_year_tax_credit = current_year_tax_credit;
+      current_obj.find('.current_year_tax_credit').val('-$'+current_year_tax_credit);
+
+      // subtotal
+      sub_total(current_obj);
+    }
+    
 
   },10));
 
@@ -93,8 +239,11 @@
 
     var ui_saleprice = parseInt(current_obj.find('.ui_saleprice').val());
     var commission = (ui_saleprice * commission_rate)/100;
-    //console.log(commission);
+    store.commission = commission;
     current_obj.find('.real_estate_commission').val('-$'+ commission);
+
+    // subtotal
+    sub_total(current_obj);
 
   },10) );
 
@@ -102,10 +251,30 @@
   $(document).on('change', '.closing_date', delay(function() {
     // get the value 
     var current_obj  = $(this).closest('.net-rate-calculator-warp');
-    var ui_saleprice = parseInt(current_obj.find('.ui_saleprice').val());
+    
     var closing_date = (current_obj.find('.closing_date').val());
     console.log(closing_date);
-    
+    var days = year_days(closing_date);
+    console.log(days);
+
+    if( isNaN(days) == false){
+      store.days = days;
+    }
+
+    var last_year_property_taxes = parseInt(current_obj.find('.last_year_property_taxes').val());
+
+    if( isNaN(days) == false && isNaN(last_year_property_taxes) == false ){
+      store.days = days;
+      
+      var current_year_tax_credit = ( Math.ceil(last_year_property_taxes/365) * days * -1);
+
+      store.current_year_tax_credit = current_year_tax_credit;
+      current_obj.find('.current_year_tax_credit').val('-$'+current_year_tax_credit);
+    }
+
+    // subtotal
+    sub_total(current_obj);
+
   },10));
   
   // on salse price change  
@@ -113,20 +282,21 @@
     // get the value 
     var current_obj  = $(this).closest('.net-rate-calculator-warp');
     var ui_saleprice = parseInt(current_obj.find('.ui_saleprice').val());
-    var closing_date = (current_obj.find('.closing_date').val());
-    
+        
     console.log(ui_saleprice);
-    console.log(closing_date);
-
-    // check closing_date
-    
-
+        
     if( isNaN(ui_saleprice) == false ){
 
+      var owner_policy_premium = owner_policy(ui_saleprice);
+      store.owner_policy_premium = owner_policy_premium;
+      current_obj.find('.owner_policy').val('-$'+ owner_policy_premium);
+
       var state_county_transfer_tax = (ui_saleprice * 0.0015) ;
+      store.state_county_transfer_tax = state_county_transfer_tax;
       current_obj.find('.state_county_transfer_tax').val('-$'+ state_county_transfer_tax);
 
       var city_transfer_tax = Math.ceil( ui_saleprice / 1000 ) * 5;
+      store.city_transfer_tax = city_transfer_tax;
       current_obj.find('.city_transfer_tax').val('-$'+ city_transfer_tax);
 
       var is_property_in_chicago = current_obj.find('input[name="is_property_in_chicago"]:checked').val();
@@ -135,13 +305,14 @@
       }else{
         var water_n_zoning_fees = 0;
       }
+      store.water_n_zoning_fees = water_n_zoning_fees; 
       
       // outstanding_mortgage
-      var outstanding_mortgage = parseInt(current_obj.find('.outstanding_mortgage').val());
+      //var outstanding_mortgage = parseInt(current_obj.find('.outstanding_mortgage').val());
       // closing_cost_credit
-      var closing_cost_credit = parseInt(current_obj.find('.closing_cost_credit').val());
+      //var closing_cost_credit = parseInt(current_obj.find('.closing_cost_credit').val());
 
-
+      // fix cost ---
       var commitment_update_fee = 150 ;
       current_obj.find('.commitment_update_fee').val('-$'+ commitment_update_fee);
 
@@ -153,6 +324,10 @@
 
       var survey_fee = 525 ;
       current_obj.find('.survey_fee').val('-$'+ survey_fee);
+
+      store.fix_cost = 150 + 3 + 50 + 525;
+      // fix cost ---
+
 
       // last know annual Property Taxes 
 
@@ -170,7 +345,6 @@
         var _2nd_installment_paid = store._2nd_installment_paid;
       }
 
-
       // current_year_tax_credit
       
       // real_estate_commission
@@ -180,31 +354,10 @@
       store.commission = commission; // store commission 
 
       // sub total
-
+      sub_total(current_obj);
     }
-
-    // current_year_tax_credit
-     
     
-
     return;
-
-    //if( isNaN(agent_saleprice) == false && isNaN(closing_date) == false ){
-      // var data = {
-      //   action              : 'get_agent_property_rate',  
-      //   agent_saleprice     : ui_saleprice,
-      //   agent_fullrate      : agent_fullrate,
-      // };
-      //$.post(WPOSProCal.ajaxurl, data, function(result) {
-
-        // if( result.success = 1 && (result.income != '') ) {
-        //   current_obj.find('.avg_85').val('$'+result.income);
-        // }else if(result.data == '') {
-        //   current_obj.find('.avg_85').val('$'+0);
-        // }
-            
-      //});
-    //}
 
   }, 10));
   

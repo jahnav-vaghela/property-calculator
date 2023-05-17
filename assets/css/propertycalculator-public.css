@@ -32,3 +32,9 @@
         text-decoration: none;
         cursor: pointer;
     }
+
+.calc-requred,
+.calc-note{
+    color: red;
+    font-weight: bold;
+}

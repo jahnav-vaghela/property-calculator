@@ -219,7 +219,7 @@
     var days = store.days;
     if( isNaN(days) == false ){
 
-      var current_year_tax_credit = ( Math.ceil(last_year_property_taxes/365) * days * -1 );
+      var current_year_tax_credit = parseFloat( ((last_year_property_taxes/365) * days * -1 ).toFixed(2) );
       store.current_year_tax_credit = current_year_tax_credit;
       current_obj.find('.current_year_tax_credit').val('-$'+current_year_tax_credit);
 
@@ -266,7 +266,7 @@
     if( isNaN(days) == false && isNaN(last_year_property_taxes) == false ){
       store.days = days;
       
-      var current_year_tax_credit = ( Math.ceil(last_year_property_taxes/365) * days * -1);
+      var current_year_tax_credit = parseFloat( ((last_year_property_taxes/365) * days * -1).toFixed(2) );
 
       store.current_year_tax_credit = current_year_tax_credit;
       current_obj.find('.current_year_tax_credit').val('-$'+current_year_tax_credit);

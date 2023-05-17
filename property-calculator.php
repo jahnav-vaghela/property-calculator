@@ -4,7 +4,7 @@
  * Plugin URL: https://www.essentialplugin.com/wordpress-plugin/wp-blog-and-widgets/
  * Text Domain: prop-calc
  * Description: few property calculators. custom build plugin.
- * Version: 1.0
+ * Version: 1.1
  * Author: WPOnlineSupport
 */
 
